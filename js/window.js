@@ -186,7 +186,7 @@ let btn_push = ()=>{
         object_make(send_text);
         element.value=null;
     }
-    else if(localStorage.getItem("oauth_varifier")===null){
+    else if(localStorage.getItem("oauth_verifier")===null){
         post_uri("request_token");
         return;
     }
