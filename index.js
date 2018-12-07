@@ -99,7 +99,7 @@ const http_server = new http.createServer((req, res)=>{
           const date = new Date();
           return Math.floor( date.getTime() / 1000 );
         })(),
-        oauth_verifier: res_data.oauth_varifier,
+        oauth_verifier: res_data.oauth_verifier,
         oauth_nonce: (()=>{
           const date = new Date();
           return date.getTime();

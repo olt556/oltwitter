@@ -3,7 +3,7 @@ var data2 = [];
 function twitter_init(data_token1){
     console.log("test1: "+ data_token1);
     var data_token = JSON.parse(data_token1);
-    console.log("test2: "+ data_token);
+    console.log("test2: "+ JSON.stringify(data_token));
     localStorage.setItem("consumer_key", data_token.consumer_key);
     localStorage.setItem("consumer_secret", data_token.consumer_secret);
     location.href=(data_token.oauth_uri);
@@ -15,7 +15,7 @@ if((window.location.search+"").match(/oauth_verifier/)){
     localStorage.setItem("oauth_token", value2);
     console.log(value1);
     var options = {
-        oauth_varifier: localStorage.getItem("oauth_verifier")+"",
+        oauth_verifier: localStorage.getItem("oauth_verifier")+"",
         oauth_token: localStorage.getItem("oauth_token")+""
     };
     setTimeout(twitter_auth(JSON.stringify(options)), 1000);
