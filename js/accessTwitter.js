@@ -100,7 +100,6 @@ function SendTwitter(tweets_txt){
         consumerSecret: localStorage.getItem("consumer_secret"),
         accessToken:  localStorage.getItem("oauth_token"),
         tokenSecret:   localStorage.getItem("oauth_token_secret"),
-        //oauth_varifier: localStorage.getItem("oauth_varifier")
     };   
     let accessor = {
         consumerSecret: options.consumerSecret,
@@ -114,7 +113,6 @@ function SendTwitter(tweets_txt){
             oauth_signature_method:"HMAC-SHA1" ,
             oauth_consumer_key: options.consumerKey ,
             oauth_token: options.accessToken,
-            oauth_varifier: options.oauth_varifier,
             status: tweets_txt + "",
             callback: "cbname2"
         }      
