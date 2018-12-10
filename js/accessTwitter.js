@@ -38,7 +38,7 @@ let getTokenKeys = (req_str)=>{
          request.onerror = (event)=>{
              console.log(event.type); // error
          };
-         request.open("POST", 'https://oltorosy.herokuapp.com/', true);
+         request.open("POST", 'https://xxx.com/', true);
          XMLHttpRequest.responseType = 'json';
          request.send(req_str);
          console.log(req_str);
@@ -90,7 +90,7 @@ let twitterOAuth = (options)=>{
    request.onerror = (event)=>{
       console.log(event.type); // error
    }
-   request.open("POST", "https://oltorosy.herokuapp.com/");
+   request.open("POST", "https://xxx.com/");
    XMLHttpRequest.responseType = 'json';
    request.send(options);
    console.log();
