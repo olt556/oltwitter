@@ -21,7 +21,7 @@ let getTwitterTL = ()=>{
             oauth_signature_method: "HMAC-SHA1",
             oauth_consumer_key: options.consumerKey,
             oauth_token: options.accessToken,
-            callback: "cbname1"
+            callback: "http://xxx.xxx.com"
         }
     };
     OAuth.setTimestampAndNonce(message);
@@ -33,7 +33,7 @@ let getTwitterTL = ()=>{
         dataType: "jsonp",
         jsonp: false,
         cache: true
-    });
+    })
 }
 let SendTweets = (tweets_txt)=>{
     let options = {
@@ -57,7 +57,7 @@ let SendTweets = (tweets_txt)=>{
             oauth_consumer_key: options.consumerKey ,
             oauth_token: options.accessToken,
             status: tweets_txt + "",
-            callback: "cbname2"
+            callback: "http://xxx.xxx.com"
         }      
     };
     OAuth.setTimestampAndNonce(message);

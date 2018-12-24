@@ -19,8 +19,27 @@ html,body{
 }
 #timeline_panel{
         position: absolute;
-        overflow:scroll;
         background:#EEE;
+}
+#btn_tb {
+       position: absolute;
+}
+ #btn_tab{
+        position:absolute;
+        display: inline-block;
+        background: rgb(73, 72, 72);
+        color: rgb(73, 72, 72);
+        text-align: center;
+        vertical-align: middle;
+        overflow: hidden;
+}
+#btn_tab:active {
+        border-bottom: solid 1px rgb(73, 72, 75);;
+        box-shadow: 0 0 0px rgba(0, 0, 0, 0.40);
+        border-radius: 10%;
+}
+#btn_clean:btn_cln {
+       position: absolute;
 }
 #btn_clean{
         position:absolute;
@@ -35,9 +54,6 @@ html,body{
         border-bottom: solid 1px rgb(73, 72, 75);;
         box-shadow: 0 0 0px rgba(0, 0, 0, 0.40);
         border-radius: 10%;
-}
-#btn_clean:btn_cln {
-       position: absolute;
 }
 #btn_sample{
         position:absolute;
@@ -69,9 +85,7 @@ html,body{
 }
 #message_container{
         position:absolute;
-        background:#CCC;
-        height:auto;
-        width:auto;
+        background:#000;
 }
 #message_0{
          position:absolute;
