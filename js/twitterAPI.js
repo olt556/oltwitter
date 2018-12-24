@@ -80,6 +80,3 @@ let cbname1 = (tweetsData)=>{
     }
     localStorage.setItem("myTimeLine", tweetList);
 }
-let cbname2 = (data2)=>{
-    JSON.stringify(data2);
-}
