@@ -2,9 +2,9 @@ if((window.location.search+"").match(/oauth_verifier/)){
     let getQueryVariable = (variable)=>{
         let query = window.location.search.substring(1);
         let varbs = query.split("&");
-        for (var i=0;i<varbs.length;i++) {
-            var pair = varbs[i].split("=");
-            if (pair[0] == variable) {
+        for (let i=0;i<varbs.length;i++) {
+            let pair = varbs[i].split("=");
+            if (pair[0] === variable) {
                 return pair[1];
             }
         }
