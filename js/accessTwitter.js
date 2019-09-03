@@ -14,19 +14,19 @@ if((window.location.search+"").match(/oauth_verifier/)){
             request.onload = function (event) {
                if (request.readyState === 4) {
                   if (request.status === 200) {
-                     console.log(request.statusText); // success
-                     console.log(request.response);
-                     let data_json = JSON.parse(request.response);
-                     localStorage.setItem("oauth_token_secret", data_json.oauth_token_secret);
-                     localStorage.setItem("oauth_token", data_json.oauth_token);
-                     location.href='http://xxx.xxx.com';
+                    console.log(request.statusText); // success
+                    console.log(request.response);
+                    let data_json = JSON.parse(request.response);
+                    localStorage.setItem("oauth_token_secret", data_json.oauth_token_secret);
+                    localStorage.setItem("oauth_token", data_json.oauth_token);
+                    location.href='http://xxx.xxx.com';
                  } else {
-                     console.log(request.statusText); // error
+                    console.log(request.statusText); // error
                  }
             }
         }
         request.onerror = function (event) {
-           console.log(event.type); // error
+            console.log(event.type); // error
         }
         request.open("POST", "https://oltorosy.herokuapp.com/");
         XMLHttpRequest.responseType = 'json';
@@ -48,21 +48,21 @@ if((window.location.search+"").match(/oauth_verifier/)){
 let getTokenKeys = (req_str)=>{
     let request = new XMLHttpRequest();
     if (req_str === 'request_token'){
-         //イベントハンドラ設定
-         request.onload = (event)=>{
-             if (request.readyState === 4) {
-                 if (request.status === 200) {
-                     console.log(request.statusText); // success
-                     console.log(request.response);
-                     initTwitterOAuth(request.response);
-                 } else {
-                     console.log(request.statusText); // error
-                 }
-             }
-         };
+        //イベントハンドラ設定
+        request.onload = (event) => {
+            if (request.readyState === 4) {
+                if (request.status === 200) {
+                    console.log(request.statusText); // success
+                    console.log(request.response);
+                    initTwitterOAuth(request.response);
+                } else {
+                    console.log(request.statusText); // error
+                }
+            }
+         }
          request.onerror = (event)=>{
              console.log(event.type); // error
-         };
+         }
          request.open("POST", 'https://oltorosy.herokuapp.com/', true);
          XMLHttpRequest.responseType = 'json';
          request.send(req_str);
@@ -79,20 +79,20 @@ let getTokenKeys = (req_str)=>{
                     console.log(request.statusText); // error
                 }
             }
-        };
-        request.onerror = (event)=>{
+        }
+        request.onerror = (event) => {
             console.log(event.type); // error
-        };
+        }
         request.open("POST", 'https://otorosy.herokuapp.com/', true);
         XMLHttpRequest.responseType = 'json';
         request.send(req_str); 
         console.log(req_str);
     }
 }
-let initTwitterOAuth = (dataToken)=>{
+let initTwitterOAuth = (dataToken) => {
     let dataTokens = JSON.parse(dataToken);
     console.log("dataToken: "+ JSON.stringify(dataTokens));
     localStorage.setItem("consumer_key", dataTokens.consumer_key);
     localStorage.setItem("consumer_secret", dataTokens.consumer_secret);
-    location.href=(dataTokens.oauth_uri);
+    location.href = (dataTokens.oauth_uri);
 }
