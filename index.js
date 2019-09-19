@@ -1,39 +1,41 @@
 const crypto = require('crypto');
-const http = require('http');
-const qs = require('querystring');
+const http  = require('http');
+const qs  = require('querystring');
 
 const requestUrl = 'https://api.twitter.com/oauth/request_token';
 const requestUrl2 = 'https://api.twitter.com/oauth/access_token';
 const callbackUrl = 'http://test.com/';
-const consumer_key = "";
-const consumer_secret = "";
-const keyOfSign = encodeURIComponent(consumer_secret) + "&";
+const consumerKey = "";
+const consumerSecret = "";
+const keyOfSign = encodeURIComponent(consumerSecret) + "&";
 
 let resRequest = {};
 let resAccess = {};
-let data_token = {};
+let dataToken = {};
 let paramsRequestToken = {};
 let paramsAccessToken = {};
-let res_data;
-
-let oauth_token;
-let ipAddress = '1';
+let resData = "";
+let oauthToken = "";
+let oauthTokenSecret = "";
+let ipAddress = "1";
 let ipTime = 0;
 
-const http_server = new http.createServer((req, res) => {
+const httpServer = new http.createServer((req, res) => {
     res.setHeader('Access-Control-Allow-Origin', 'http://test.jp');
     res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
     res.setHeader('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS');
-    if (ipTime !== 0 && (Date.now() - ipTime) >= 50000 && ipAddress !== '1') {
+    if (ipTime !== 0 && (Date.now() - ipTime) >= 50000 && ipAddress !== "1") {
         ipTime = 0;
-        ipAddress = '1';
+        ipAddress = "1";
     }
     if (req.method === 'POST') {
         req.on('data', (data) => {
-            res_data = data + "";
+            const getTokenMethods = new RequestMethods();
+
+            resData = data + "";
             paramsRequestToken = {
                 oauth_callback: callbackUrl,
-                oauth_consumer_key: consumer_key,
+                oauth_consumer_key: consumerKey,
                 oauth_signature_method: 'HMAC-SHA1',
                 oauth_timestamp: (() => {
                     const date = new Date();
@@ -45,7 +47,7 @@ const http_server = new http.createServer((req, res) => {
                 })(),
                 oauth_version: '1.0'
             };
-            if (res_data === 'request_token') {
+            if (resData === "request_token") {
                 if (ipAddress === getIP(req) && (Date.now() - ipTime) < 50000) {
                     console.log("same IP  && time out!!");
                     res.writeHead(200, {
@@ -57,65 +59,169 @@ const http_server = new http.createServer((req, res) => {
                     ipTime = Date.now();
                     ipAddress = getIP(req);
                     console.log("get request_token");
-                    requestToken();
+                    getTokenMethods.getRequestToken();
                 }
-            } else { //判定考える
+            } else if (resData) { //判定考える
                 console.log("get access_token");
-                accessToken(res_data);
+                getTokenMethods.getAccessToken(resData);
             }
         });
+    }
+}).listen(process.env.PORT || 2000);
+console.log('Server running at ' + process.env.PORT);
 
-        let requestToken = () => {
-            let data_req = new RequestMethodClass(res_data);
-            data_req.getRequestToken(paramsRequestToken);
+const getIP = (req) => {
+    if (req.headers['x-forwarded-for']) {
+        return req.headers['x-forwarded-for'];
+    }
+    return 0;
+}
+
+class RequestTokenMethods {
+    constructor() {
+        this.getRequestToken = (params) => {
+            Object.keys(params).forEach(item => {
+                params[item] = encodeURIComponent(params[item]);
+            });
+
+            let requestParams = Object.keys(params).map(item => {
+                return item + '=' + params[item];
+            });
+            requestParams.sort((a, b) => {
+                if (a < b) return -1;
+                if (a > b) return 1;
+                return 0;
+            });
+            requestParams = encodeURIComponent(requestParams.join('&'));
+
+            let dataOfSign = (() => {
+                return encodeURIComponent('POST') + '&' + encodeURIComponent(requestUrl) + '&' + requestParams;
+            })();
+
+            let signature = (() => {
+                return crypto.createHmac('sha1', keyOfSign).update(dataOfSign).digest('base64');
+            })();
+
+            params['oauth_signature'] = encodeURIComponent(signature);
+
+            let headerParams = Object.keys(params).map(item => {
+                return item + '=' + params[item];
+            });
+
+            headerParams = headerParams.join(',');
+
+            let header = {
+                'Authorization': 'OAuth ' + headerParams
+            };
+
+            //オプションを定義
+            let options = {
+                url: requestUrl,
+                headers: header,
+            };
+            //リクエスト送信
+            request.post(options, (error, response, body) => {
+                //return body;
+                resRequest = qs.parse(body);
+            });
+        };
+        this.getAccessToken = (params) => {
+            Object.keys(params).forEach(item => {
+                params[item] = encodeURIComponent(params[item]);
+            });
+
+            let requestParams = Object.keys(params).map(item => {
+                return item + '=' + params[item];
+            });
+
+            requestParams.sort((a, b) => {
+                if (a < b) return -1;
+                if (a > b) return 1;
+                return 0;
+            });
+            requestParams = encodeURIComponent(requestParams.join('&'));
+            let dataOfSign = (() => {
+                return encodeURIComponent('POST') + '&' + encodeURIComponent(requestUrl2) + '&' + requestParams;
+            })();
+
+            let signature = (() => {
+                return crypto.createHmac('sha1', keyOfSign).update(dataOfSign).digest('base64');
+            })();
+
+            params['oauth_signature'] = encodeURIComponent(signature);
+            let headerParams = Object.keys(params).map(item => {
+                return item + '=' + params[item];
+            });
+
+            headerParams = headerParams.join(',');
+            let header = {
+                'Authorization': 'OAuth ' + headerParams
+            };
+            //オプションを定義
+            let options = {
+                url: requestUrl2,
+                headers: header,
+            };
+            //リクエスト送信
+            request.post(options, (error, response, body) => {
+                resAccess = qs.parse(body);
+            });
+        };
+    }
+}
+class RequestMethods{
+    constructer(res) {
+        const requestMethod = RequestTokenMethods;
+        this.reauestToken = () => {
+            requestMethod.getRequestToken(paramsRequestToken);
             setTimeout(() => {
                 //次のリクエストのためにグローバル変数に保存
-                oauth_token = resRequest.oauth_token;
-                oauth_token_secret = resRequest.oauth_token_secret;
-                data_token = {
+                oauthToken = resRequest.oauth_token;
+                oauthTokenSecret = resRequest.oauth_token_secret;
+                dataToken = {
                     oauth_token: resRequest.oauth_token,
                     oauth_token_secret: resRequest.oauth_token_secret,
                     oauth_uri: "https://api.twitter.com/oauth/authorize?oauth_token=" + encodeURIComponent(oauth_token),
-                    consumer_key: consumer_key,
-                    consumer_secret: consumer_secret
+                    consumer_key: consumerKey,
+                    consumer_secret: consumerSecret
                 };
             }, 500);
-            req.on("end", () => {
+            req.on('end', () => {
                 setTimeout(() => {
                     res.writeHead(200, {
                         "Content-Type": "application/json"
                     });
-                    res.write(JSON.stringify(data_token));
+                    res.write(JSON.stringify(dataToken));
                     res.end()
                 }, 1000);
             });
         }
-        let accessToken = (res_data) => {
-            res_data = JSON.parse(res_data);
+        this.getAccessToken = (resData) => {
+            resData = JSON.parse(resData);
             paramsAccessToken = {
-                oauth_consumer_key: consumer_key,
-                oauth_token: res_data.oauth_token,
+                oauth_consumer_key: consumerKey,
+                oauth_token: resData.oauth_token,
                 oauth_signature_method: 'HMAC-SHA1',
                 oauth_timestamp: (() => {
                     const date = new Date();
                     return Math.floor(date.getTime() / 1000);
                 })(),
-                oauth_verifier: res_data.oauth_verifier,
+                oauth_verifier: resData.oauth_verifier,
                 oauth_nonce: (() => {
                     const date = new Date();
                     return date.getTime();
                 })(),
                 oauth_version: '1.0',
             };
-            let data_req = new RequestMethodClass('access_token');
-            data_req.getAccessToken(paramsAccessToken);
+            requestMethod.getAccessToken(paramsAccessToken);
             setTimeout(() => {
-                oauth_token = resAccess.oauth_token;
-                oauth_token_secret = resAccess.oauth_token_secret;
+                oauthToken = resAccess.oauth_token;
+                oauthTokenSecret = resAccess.oauth_token_secret;
             }, 500);
-            req.on("end", () => {
+
+            req.on('end', () => {
                 setTimeout(() => {
-                    data_token = {};
+                    dataToken = {};
                     requestParams = {};
                     res.writeHead(200, {
                         "Content-Type": "application/json"
@@ -124,110 +230,6 @@ const http_server = new http.createServer((req, res) => {
                     res.end();
                 }, 1000);
             });
-        }
-    }
-}).listen(process.env.PORT || 2000);
-console.log('Server running at ' + process.env.PORT);
-
-let getIP = (req) => {
-    if (req.headers['x-forwarded-for']) {
-        return req.headers['x-forwarded-for'];
-    }
-    return '0';
-};
-
-class RequestMethodClass {
-    constructor(req) {
-        if (req === 'request_token') {
-            this.getRequestToken = (params) => {
-                Object.keys(params).forEach(item => {
-                    params[item] = encodeURIComponent(params[item]);
-                });
-
-                let requestParams = Object.keys(params).map(item => {
-                    return item + '=' + params[item];
-                });
-                requestParams.sort((a, b) => {
-                    if (a < b) return -1;
-                    if (a > b) return 1;
-                    return 0;
-                });
-                requestParams = encodeURIComponent(requestParams.join('&'));
-
-                let dataOfSign = (() => {
-                    return encodeURIComponent('POST') + '&' + encodeURIComponent(requestUrl) + '&' + requestParams;
-                })();
-
-                let signature = (() => {
-                    return crypto.createHmac('sha1', keyOfSign).update(dataOfSign).digest('base64');
-                })();
-
-                params['oauth_signature'] = encodeURIComponent(signature);
-
-                let headerParams = Object.keys(params).map(item => {
-                    return item + '=' + params[item];
-                });
-
-                headerParams = headerParams.join(',');
-
-                let header = {
-                    'Authorization': 'OAuth ' + headerParams
-                };
-
-                //オプションを定義
-                let options = {
-                    url: requestUrl,
-                    headers: header,
-                };
-                //リクエスト送信
-                request.post(options, (error, response, body) => {
-                    //return body;
-                    resRequest = qs.parse(body);
-                });
-            };
-        } else if (req === 'access_token') {
-            this.getAccessToken = (params) => {
-                Object.keys(params).forEach(item => {
-                    params[item] = encodeURIComponent(params[item]);
-                });
-
-                let requestParams = Object.keys(params).map(item => {
-                    return item + '=' + params[item];
-                });
-
-                requestParams.sort((a, b) => {
-                    if (a < b) return -1;
-                    if (a > b) return 1;
-                    return 0;
-                });
-                requestParams = encodeURIComponent(requestParams.join('&'));
-                let dataOfSign = (() => {
-                    return encodeURIComponent('POST') + '&' + encodeURIComponent(requestUrl2) + '&' + requestParams;
-                })();
-
-                let signature = (() => {
-                    return crypto.createHmac('sha1', keyOfSign).update(dataOfSign).digest('base64');
-                })();
-
-                params['oauth_signature'] = encodeURIComponent(signature);
-                let headerParams = Object.keys(params).map(item => {
-                    return item + '=' + params[item];
-                });
-
-                headerParams = headerParams.join(',');
-                let header = {
-                    'Authorization': 'OAuth ' + headerParams
-                };
-                //オプションを定義
-                let options = {
-                    url: requestUrl2,
-                    headers: header,
-                };
-                //リクエスト送信
-                request.post(options, (error, response, body) => {
-                    resAccess = qs.parse(body);
-                });
-            };
         }
     }
 }
