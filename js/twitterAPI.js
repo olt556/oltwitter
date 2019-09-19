@@ -1,8 +1,10 @@
-let getTwitterTL = ()=>{
+let tweetDateList = [];
+
+const getTwitterTL = () => {
     let options = {
         method: "GET",
         apiURL: "https://api.twitter.com/1.1/statuses/home_timeline.json",
-        count: 10,
+        count: 199,
         consumerKey: localStorage.getItem("consumer_key"),
         consumerSecret: localStorage.getItem("consumer_secret"),
         accessToken: localStorage.getItem("oauth_token"),
@@ -21,21 +23,21 @@ let getTwitterTL = ()=>{
             oauth_signature_method: "HMAC-SHA1",
             oauth_consumer_key: options.consumerKey,
             oauth_token: options.accessToken,
-            callback: "http://xxx.xxx.com"
+            callback: "cbFunc"
         }
     };
     OAuth.setTimestampAndNonce(message);
     OAuth.SignatureMethod.sign(message, accessor);
-    var url = OAuth.addToURL(message.action, message.parameters);
+    let url = OAuth.addToURL(message.action, message.parameters);
     $.ajax({
         type: options.method,
         url: url,
         dataType: "jsonp",
         jsonp: false,
         cache: true
-    })
+    });
 }
-let SendTweets = (tweets_txt)=>{
+const sendTweets = (tweets_txt) => {
     let options = {
         method: "POST",
         apiURL: "https://api.twitter.com/1.1/statuses/update.json",
@@ -57,7 +59,7 @@ let SendTweets = (tweets_txt)=>{
             oauth_consumer_key: options.consumerKey ,
             oauth_token: options.accessToken,
             status: tweets_txt + "",
-            callback: "http://xxx.xxx.com"
+            callback: "http://test.jp"
         }      
     };
     OAuth.setTimestampAndNonce(message);
@@ -69,14 +71,9 @@ let SendTweets = (tweets_txt)=>{
         url: url,
     });
 }
-let tweetsData = [];
-let data2 = [];
-let tweetList = [];
-let cbname1 = (tweetsData)=>{
-    let count = 0;
-    while(count<10){
-        tweetList.push(tweetsData[count].text);
-        count = count + 1;
-    }
-    localStorage.setItem("myTimeLine", tweetList);
+
+function cbFunc(tweetDataList){
+    console.log(tweetDataList);
+    localStorage.setItem("tweets_data_lists", JSON.stringify(tweetDataList));
+    objectMake(tweetDataList);
 }
