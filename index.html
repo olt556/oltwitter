@@ -2,36 +2,38 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <meta http-equiv="Access-Control-Allow-Origin" content="http://xxx.co.jp/*">
+        <meta http-equiv="Access-Control-Allow-Origin" content="http://test.jp/*">
         <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
         <meta name="author" content="Kokoro Kawakami">
         <meta name="application-name" content="oltwitter">
-        <link rel="stylesheet" type="text/css" href="./css/window.css">
+        <link rel="stylesheet" type="text/css" href="css/cssreset-min.css">
+        <link rel="stylesheet" type="text/css" href="css/window.css">
     </head>
     <body>
-        <div id = "window_panel" class = "window_panel">
-            <div id="headder_panel"class="headder_panel">
-                <a href="" id="btn_tab" onclick = "setTimeout(tab_push(), 300);">
-                    <div id = "btn_tb">
-                        <img src="pic/bars.png" style="width:100%; height:100%;">
+        <div class = "window">
+            <div class="header">
+                <div class="header__btn--tab">
+                    <div class="header__btn">
+                        <img src="pic/bars.png" style="width:100%; height:100%; pointer-events: none;">
                     </div>
-                </a>
-                <a href="" id="btn_clean" onclick = "clean_localStr()">
-                    <div id = "btn_cln">
-                         <img src="pic/clean_btn.png" style="width:100%; height:100%;">
+                </div>
+                <div class="header__btn--clean">
+                    <div class="header__btn">
+                        <img src="pic/clean_btn.png" style="width:100%; height:100%; pointer-events: none;">
                     </div>
-                </a>
+                </div>
             </div>
-            <div id="timeline_panel" >
-                <div id="obj" class ="obj"></div>
+            <div class="timeline" >
+                <ul class ="timeline__media">
+                </ul>
             </div>
-            <div id="input_panel" class = "input_panel" >
-                <textarea id = "textInput_area" class ="textInput_area"></textarea>
-               <a href="" id="btn_sample" onclick = "setTimeout(sendButtonPush(), 300);">
-                    <div id = "btn_pic">
-                         <img src="./pic/button_post.png" style="width:100%; height:100%;">
+            <div class="footer">
+                <textarea class="footer__text--input"></textarea>
+               <div href="" class="footer__btn--post">
+                    <div class="footer__btn">
+                         <img src="pic/button_post.png" style="width:100%; height:100%; pointer-events: none;">
                     </div>
-                </a>
+                </div>
             </div>
         </div>
     </body>
@@ -39,6 +41,6 @@
     <script type="text/javascript" src="./js/sha1.js"></script>
     <script type="text/javascript" src="./js/oauth.js"></script>
     <script type="text/javascript" src="./js/twitterAPI.js"></script>
-    <script type="text/javascript" src="./js/accessTwitter.js"></script>
     <script type="text/javascript" src="./js/window.js"></script>
+    <script type="text/javascript" src="./js/accessTwitter.js"></script>
 </html>

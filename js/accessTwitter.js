@@ -1,5 +1,5 @@
-if((window.location.search+"").match(/oauth_verifier/)){
-    let getQueryVariable = (variable)=>{
+if ((window.location.search+"").match(/oauth_verifier/)) {
+    let getQueryVariable = (variable) => {
         let query = window.location.search.substring(1);
         let varbs = query.split("&");
         for (let i=0;i<varbs.length;i++) {
@@ -9,7 +9,7 @@ if((window.location.search+"").match(/oauth_verifier/)){
             }
         }
     }
-    let twitterOAuth = (options)=>{
+    let twitterOAuth = (options) => {
         let request = new XMLHttpRequest;
             request.onload = function (event) {
                if (request.readyState === 4) {
@@ -19,7 +19,7 @@ if((window.location.search+"").match(/oauth_verifier/)){
                     let data_json = JSON.parse(request.response);
                     localStorage.setItem("oauth_token_secret", data_json.oauth_token_secret);
                     localStorage.setItem("oauth_token", data_json.oauth_token);
-                    location.href='http://xxx.xxx.com';
+                    location.href='http://test.jp';
                  } else {
                     console.log(request.statusText); // error
                  }
@@ -28,7 +28,7 @@ if((window.location.search+"").match(/oauth_verifier/)){
         request.onerror = function (event) {
             console.log(event.type); // error
         }
-        request.open("POST", "https://oltorosy.herokuapp.com/");
+        request.open("POST", "http://test.com/");
         XMLHttpRequest.responseType = 'json';
         request.send(options);
         console.log();
@@ -63,7 +63,7 @@ let getTokenKeys = (req_str)=>{
          request.onerror = (event)=>{
              console.log(event.type); // error
          }
-         request.open("POST", 'https://oltorosy.herokuapp.com/', true);
+         request.open("POST", 'http://test.com/', true);
          XMLHttpRequest.responseType = 'json';
          request.send(req_str);
          console.log(req_str);
@@ -83,7 +83,7 @@ let getTokenKeys = (req_str)=>{
         request.onerror = (event) => {
             console.log(event.type); // error
         }
-        request.open("POST", 'https://otorosy.herokuapp.com/', true);
+        request.open("POST", 'https://otorocy.herokuapp.com/', true);
         XMLHttpRequest.responseType = 'json';
         request.send(req_str); 
         console.log(req_str);

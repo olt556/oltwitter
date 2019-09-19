@@ -4,7 +4,7 @@ const qs = require('querystring');
 
 const requestUrl = 'https://api.twitter.com/oauth/request_token';
 const requestUrl2 = 'https://api.twitter.com/oauth/access_token';
-const callbackUrl = 'http://xxx.co.jp';
+const callbackUrl = 'http://test.com/';
 const consumer_key = "";
 const consumer_secret = "";
 const keyOfSign = encodeURIComponent(consumer_secret) + "&";
@@ -21,7 +21,7 @@ let ipAddress = '1';
 let ipTime = 0;
 
 const http_server = new http.createServer((req, res) => {
-    res.setHeader('Access-Control-Allow-Origin', 'http://xxx.co.jp');
+    res.setHeader('Access-Control-Allow-Origin', 'http://test.jp');
     res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
     res.setHeader('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS');
     if (ipTime !== 0 && (Date.now() - ipTime) >= 50000 && ipAddress !== '1') {
